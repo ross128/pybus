@@ -28,9 +28,11 @@ def retrieve_occupancy():
 			pass
 
 	# occupancy data
-	categories = ['thermen', 'sauna', 'garage']
-	for i,div in enumerate(tree.div(id='box_auslastungen')[0].find_all('div', 'inner')):
-		occupancy[categories[i]] = int(div['style'][6:-2])
+	occupancy_div = tree.div(id='box_auslastungen')[0]
+	for i, category in zip([10, 20, 30], ['thermen', 'sauna', 'garage']):
+		bar_div = occupancy_div.find_all('div', id=i)[0].find_all('div', 'inner')
+		if len(bar_div) == 1:
+			occupancy[category] = int(bar_div[0]['style'][6:-2])
 
 	return occupancy
 
@@ -49,7 +51,8 @@ def main(host, port):
 			if occupancy['update'] > previous_update:
 				previous_update = occupancy['update']
 				for topic in ['update', 'thermen', 'sauna', 'garage']:
-					publisher.send_multipart(['/carolus/{0}'.format(topic), str(occupancy[topic])])
+					if topic in occupancy:
+						publisher.send_multipart(['/carolus/{0}'.format(topic), str(occupancy[topic])])
 
 			# sleep until next update (minute = 1, 6, 11, 16, ..., 56)
 			now = datetime.datetime.now()
