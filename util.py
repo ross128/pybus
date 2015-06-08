@@ -3,6 +3,7 @@
 
 import json
 import datetime
+import geopy
 
 class JSONEncoder(json.JSONEncoder):
 	"""extending JSONEncoder to serialize more types (e.g. datetimes)"""
@@ -16,5 +17,7 @@ class JSONEncoder(json.JSONEncoder):
 			return obj.isoformat()
 		elif isinstance(obj, datetime.time):
 			return obj.isoformat()
+		elif isinstance(obj, geopy.Point):
+			return str(obj)
 		else:
 			return super(JSONEncoder, self).default(obj)
