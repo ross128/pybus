@@ -5,10 +5,11 @@ import zmq
 import threading
 import logging
 import logging.handlers
+import util
 
 class Logger(threading.Thread):
 	"""logger for all messages and events"""
-	def __init__(self, stop_logging, filename='bus.bz2'):
+	def __init__(self, stop_logging, filename='bus.log'):
 		super(Logger, self).__init__()
 		self.filename = filename
 		self.stop_logging = stop_logging
@@ -21,7 +22,7 @@ class Logger(threading.Thread):
 
 		# logger parameters for stdout and compressed file
 		log_format = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
-		file_log_handler = logging.handlers.TimedRotatingFileHandler(self.filename, when='midnight', backupCount=7)
+		file_log_handler = util.TimedCompressingRotatingFileHandler(self.filename, when='midnight', backupCount=7)
 		file_log_handler.setFormatter(log_format)
 		stream_log_handler = logging.StreamHandler()
 		stream_log_handler.setFormatter(log_format)
