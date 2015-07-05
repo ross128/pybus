@@ -1,1 +1,3 @@
 *.pyc
+bus.log*
+__pycache__
