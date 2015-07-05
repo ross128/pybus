@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import zmq
@@ -10,13 +10,13 @@ def main(host, port, topic):
 	publisher.connect("tcp://{0}:{1}".format(host, port))
 
 	running = True
-	print "press [CTRL] + [D] to quit"
+	print("press [CTRL] + [D] to quit")
 	while running:
 		try:
-			data = raw_input("in> ")
+			data = input("in> ")
 		except EOFError:
 			break
-		publisher.send_multipart([topic, data])
+		publisher.send_multipart([topic.encode('utf-8'), data.encode('utf-8')])
 
 	# clean up
 	publisher.close()
@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
 	try:
 		args = argparser.parse_args()
-	except IOError, msg:
+	except IOError as msg:
 		argparser.error(str(msg))
 
 	main(args.host, args.port, args.topic)

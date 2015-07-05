@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import zmq
@@ -9,13 +9,13 @@ def main(host, port, topic):
 	context = zmq.Context.instance()
 	subscriber = context.socket(zmq.SUB)
 	subscriber.connect("tcp://{0}:{1}".format(host, port))
-	subscriber.setsockopt(zmq.SUBSCRIBE, topic)
+	subscriber.setsockopt_string(zmq.SUBSCRIBE, topic)
 
-	print "quit with [CTRL] + [C]"
+	print("quit with [CTRL] + [C]")
 	try:
 		while True:
 			[address, contents] = subscriber.recv_multipart()
-			print "[{0}] {1}".format(address, contents)
+			print("[{0}] {1}".format(address, contents))
 	except KeyboardInterrupt:
 		pass
 	finally:
@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
 	try:
 		args = argparser.parse_args()
-	except IOError, msg:
+	except IOError as msg:
 		argparser.error(str(msg))
 
 	main(args.host, args.port, args.topic)
